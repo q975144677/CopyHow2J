@@ -6,8 +6,8 @@
 使用ActiveMQ对短信和邮件发送进行异步处理，提高用户体验，成功将发送用时从3到4秒减少到0.9秒。<br>
 
 ![1](https://github.com/q975144677/CopyHow2J/blob/master/src/main/resources/static/1.PNG)
-![2](https://github.com/q975144677/CopyHow2J/blob/master/src/main/resources/static/9.PNG)
-![3](https://github.com/q975144677/CopyHow2J/blob/master/src/main/resources/static/3.PNG)
+![2](https://github.com/q975144677/CopyHow2J/blob/master/src/main/resources/static/2.PNG)
+![3](https://github.com/q975144677/CopyHow2J/blob/master/src/main/resources/static/9.PNG)
 ![4](https://github.com/q975144677/CopyHow2J/blob/master/src/main/resources/static/4.PNG)
 ![5](https://github.com/q975144677/CopyHow2J/blob/master/src/main/resources/static/5.PNG)
 ![6](https://github.com/q975144677/CopyHow2J/blob/master/src/main/resources/static/6.PNG)

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<style>
+.a{
+    margin:20px 0px;
+}
+
+     .el-select .el-input {
+         width: 130px;
+     }
+    .input-with-select .el-input-group__prepend {
+        background-color: #fff;
+    }
+
+</style>
+<div th:include="include/header::header"></div>
+
+<div id="app">
+    <el-breadcrumb separator-class="el-icon-arrow-right" style = "margin:10px;">
+        <el-breadcrumb-item><a href="/how2j">首页</a></el-breadcrumb-item>
+        <el-breadcrumb-item>账户</el-breadcrumb-item>
+        <el-breadcrumb-item>登录</el-breadcrumb-item>
+        <el-breadcrumb-item>邮箱登录</el-breadcrumb-item>
+    </el-breadcrumb>
+    <form id="f" th:action="@{/account/login/email}" method="post" style="width:800px;margin:0px auto;">
+        <div style="float:left;color:red;">
+            <span th:if="${msg != null}">用户名或者密码错误</span>
+        </div>
+        <br>
+
+        邮箱：
+        <div class="a"><el-input id="email" name = "email" v-model="username" placeholder="请输入邮箱" >
+            <el-button slot="append" icon="el-icon-download
+" id="get" @click="s1">获取验证码</el-button></el-input></div>
+        验证码：
+        <div class="a">
+        <el-input id="2nm" name = "e_code" type = "text" v-model="password" placeholder="请输入验证码" ></el-input>
+        </div>
+        <template>
+
+            <el-checkbox v-model="checked" name="remember-me">记住我</el-checkbox>
+        </template>
+        <br>
+        <el-button-group style ="margin:10px 0px">
+            <el-button type="primary" icon="el-icon-check" id="sub">提交</el-button>
+            <el-button type="primary" id="res">重置<i class="el-icon-close"></i></el-button>
+
+        </el-button-group>
+
+        <el-button-group style ="margin:10px 0px;float:right">
+            <a href="/how2j/account/login/phone">  <el-button type="primary" icon="el-icon-mobile-phone" >手机登录</el-button>
+            </a> <a href="/how2j/account/login/"> <el-button type="primary" >密码登陆 <i class="el-icon-message"></i></el-button>
+        </a>
+        </el-button-group>
+    </form>
+
+</div>
+
+
+<div>
+
+
+
+</div>
+</body>
+<script>
+    new Vue({
+        el:"#app",
+        data:{
+            username:"",
+            password:"",
+            checked:"false"
+        },
+        mounted:function () {
+            $(function () {
+                $("#sub").click(function () {
+                    //alert(1);
+
+                    $("#f").submit();
+                });
+                $("#res").click(function () {
+                    //alert(1);
+                    $("#f")[0].reset();
+                });
+            });
+        },
+        methods:{
+            s1:function () {
+                var f = true;
+                $(function () {
+                    //  alert(1);
+                    var e = $("#email");
+                    //alert(e.val());
+                    console.log(e.val());
+                    $.ajaxSettings.async = false;
+                    $.post(
+
+                        "/how2j/send_email",
+                        {"to":e.val()},
+                        function (result) {
+
+                            if (result == "success"){
+                                f = true;
+                            }else{
+                                f =  false;
+                            }
+                        }
+
+                    );
+                });
+                if (!f) {
+                    this.$message('您输入的邮箱或者验证码有误');
+                }else {
+                    this.$message('发送成功，请前往邮箱查看');
+                }
+            }
+        }
+
+    })
+    new Vue({
+        el:'#nav',
+        data:{
+            val:"0",
+            nav:'9',
+            now:'教学一览'
+        },
+        mounted:function () {
+            $.post(
+                "/how2j/get_no_read",
+                function (result) {
+                    //   alert(1);
+                    if (result != "false"){
+                        //alert(result);
+                        this.val = result ;
+                    }
+                }
+
+            );
+        }
+
+
+    })
+</script>
+</body>
+</html>

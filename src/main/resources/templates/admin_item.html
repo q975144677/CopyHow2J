@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+
+    <table>
+        <tr>
+            <td>id</td>
+            <td>name</td>
+            <td>subtitle</td>
+            <td>tools</td>
+        </tr>
+        <tr th:each="item : ${items}">
+            <td><a th:href="@{/admin/item/{id}/step(id=${item.id})}"  th:text = "${item.id}"></a></td>
+            <td th:text = "${item.name}"></td>
+            <td th:text = "${item.subTitle}"></td>
+            <td ><a th:href="@{/admin/item/{id}/edit(id=${item.id})}">edit</a>
+                <form method="post" th:action="@{/admin/item/{id}(id=${item.id})}"><input type="hidden" name="_method" value="DELETE">
+                    <input type="submit" value="delete"> </form>
+            need_to_buy;
+
+            <form th:if = "${null == item.needToBuy}" th:action="@{/admin/need_to_buy}" method="post">
+                <input type="hidden" name="flag" value="false">
+                <input type="text" name="price">
+                <input type="hidden" name="iid" th:value="${item.id}">
+
+                <input type="submit" th:value="add_to_need_to_buy"></form>
+
+                <form th:if = "${null != item.needToBuy}" th:action="@{/admin/need_to_buy/{id}(id=${item.needToBuy.id})}"
+                      method="post"><input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="flag" value="false">
+                    <input type="submit" th:value="del_to_need_to_buy"></form>
+            </td>
+        </tr>
+    </table>
+
+    <form method="post" th:action="@{/admin/item}">
+        <input type="hidden" th:value="${sid}" name="sid">
+        name:<input type="text" name="name" > <br>
+        subtitle : <input type="text" name="subTitle"><br><input type="submit"></form>
+</div>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <form th:action="@{/admin/stage}" method="post"><input type="hidden" name="_method" value="PUT">
+        <input type="hidden" th:value="${stage.id}" name="id">
+        <input type="text" th:value="${stage.name}" name="name">
+        <input type="submit"></form>
+
+
+</div>
+</body>
+</html>

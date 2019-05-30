@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+     >
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<style>
+    .el-menu-vertical-demo:not(.el-menu--collapse) {
+        width: 200px;
+        min-height: 400px;
+    }
+
+    a {
+
+        text-decoration: none;
+    }
+
+    .box-card {
+        margin: 10px;
+        width: 25%;
+
+    }
+
+    .float .box-card {
+        float: left;
+    }
+    .el-menu {
+
+        min-width: 80%;
+    }
+
+
+
+</style>
+<div th:include="include/header::header"></div>
+
+<div id="app">
+
+    <el-row :gutter="20">
+        <el-col :span="4">
+            <div class="grid-content bg-purple">
+
+                <el-menu :default-active="ind" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
+                  <!--
+
+                    <el-submenu index="1">
+                        <template slot="title">
+                            <i class="el-icon-location"></i>
+                            <span slot="title">导航一</span>
+                        </template>
+                        <el-menu-item-group>
+                            <span slot="title">分组一</span>
+                            <el-menu-item index="1-1">选项1</el-menu-item>
+                            <el-menu-item index="1-2">选项2</el-menu-item>
+                        </el-menu-item-group>
+                        <el-menu-item-group title="分组2">
+                            <el-menu-item index="1-3">选项3</el-menu-item>
+                        </el-menu-item-group>
+                        <el-submenu index="1-4">
+                            <span slot="title">选项4</span>
+                            <el-menu-item index="1-4-1">选项1</el-menu-item>
+                        </el-submenu>
+                    </el-submenu>
+                    -->
+                    <a class="in" :href="'/how2j/stage/'+stage.id" v-for="stage,index in stages">
+
+                        <!-- th:class="${stage.id == now}?el-icon-star-off:el-icon-remove-outline"-->
+                        <el-menu-item class="item" :index="stage.id">
+                            <i v-if="stage.id == ind" class="el-icon-star-off"></i>
+                            <i v-else class="el-icon-remove-outline"></i>
+                            <span slot="title">{{stage.name}}</span>
+                        </el-menu-item>
+                    </a>
+                </el-menu>
+            </div>
+        </el-col>
+
+        <el-col :span="20">
+            <div class="grid-content bg-purple">
+                <div class="float">
+                    <el-card class="box-card" v-for="item,index in items">
+                        <div slot="header" class="clearfix">
+                            <span>{{item.name}}</span>
+                            <a :href="'/how2j/item/'+item.id">
+                                <el-button style="float: right; padding: 3px 0" type="text">查看详情</el-button>
+                            </a>
+                        </div>
+                        <div class="text item">
+                            {{item.name}}
+                        </div>
+                    </el-card>
+                </div>
+            </div>
+        </el-col>
+
+
+    </el-row>
+</div>
+
+<!--
+    <ul>
+        <li th:each="stage : ${stages}"><a th:href="@{/stage/{id}(id=${stage.id})}" th:text="${stage.name}"> stage</a></li>
+    </ul>
+
+    <ul>
+        <li th:each="item : ${items}"><a th:href="@{/item/{id}(id=${item.id})}" th:text="${item.name}"></a></li>
+    </ul>
+-->
+<!--
+<div sec:authorize="isAuthenticated()">
+    <p>已登录</p>
+    <p>登录名：<span sec:authentication="name"></span></p>
+    <p>Password：<span sec:authentication="principal.password"></span></p>
+    <div sec:authentication="principal.authorities"></div>
+    <p>Email ：<span sec:authentication="principal.email"></span></p>
+    <p>Name：<span sec:authentication="principal.username"></span></p>
+    <p>Status：<span sec:authentication="principal.status"></span></p>
+    <p>拥有的角色：
+        <span sec:authorize="hasRole('ROLE_ADMIN')">管理员</span>
+        <span sec:authorize="hasRole('ROLE_USER')">用户</span>
+    </p>
+</div>
+<div sec:authorize="isAuthenticated()"><p>未登录</p></div>
+-->
+</body>
+<script th:inline="javascript">
+    var items = [[${items}]];
+    var stages = [[${stages}]];
+    new Vue({
+        el:'#nav',
+        data:{
+            val:"0",
+            nav:'1',
+            now:'教学一览'
+        },
+        mounted:function () {
+            $.post(
+                "/how2j/get_no_read",
+                function (result) {
+                    //   alert(1);
+                    if (result != "false"){
+                        //alert(result);
+                        this.val = result ;
+                    }
+                }
+
+            );
+        }
+
+    })
+
+    new Vue({
+        el: '#app',
+        data: {
+            items: items,
+            isCollapse: true,
+            ind: 't',
+            stages: stages,
+            in2: '#',
+            noin: '#',
+            page: 'http://12306.com'
+        },
+        methods: {
+            page(id) {
+                return "/how2j/stage/" + id;
+            },
+            in(index) {
+                if (index == this.index) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            handleOpen(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleClose(key, keyPath) {
+                console.log(key, keyPath);
+            }
+        },
+        mounted: function () {
+            var href = window.location.href;
+            url = href.split("/how2j")[1];
+            url = url.split("/")[2];
+            this.ind = url;
+            console.log(this.ind);
+        }
+
+    })
+
+
+</script>
+<script>
+
+
+</script>
+</html>

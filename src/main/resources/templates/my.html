@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<style>
+    form input {
+        margin: 10px 0px;
+    }
+
+</style>
+<div th:include="include/header::header"></div>
+<div id="app">
+
+    <form id="form" method="post" th:action="@{/change/{username}(username=${user.username})}"
+          style="margin: 0px auto;width:40%;">
+        账户：<span th:text="${user.username}"></span>
+        <br>
+        <input type="hidden" th:value="${user.id}" name="id">
+        昵称：
+        <el-input id="nm" name="name" v-model="name" placeholder="请输入内容"></el-input>
+        <br>
+        原密码：
+        <el-input id="old" name="old" v-model="old" placeholder="请输入原密码"></el-input>
+        <br>
+        修改密码：
+        <el-input id="pd" name="password" v-model="password" placeholder="请输入内容"></el-input>
+
+        <el-button style="margin: 10px 0px;" type="primary" id="sub">立即修改</el-button>
+        <a href="#" style="text-decoration: none;font-size: 12px;   ">忘记密码？</a>
+        <el-button-group style="float:right;margin:10px 0px;">
+            <el-button type="primary" @click="opendialog" icon="el-icon-arrow-left">绑定邮箱</el-button>
+            <el-button type="primary" @click="opendialog2">绑定手机<i class="el-icon-arrow-right el-icon--right"></i>
+            </el-button>
+        </el-button-group>
+
+    </form>
+
+    <el-dialog
+            title="提示"
+            :visible.sync="dialogVisible"
+            width="30%"
+    >
+        <span>绑定邮箱</span>
+        <form th:action="@{/e_code_vail}" method="post" id="e_form">
+            <input type="hidden" th:value="${user.id}" name="id">
+
+            <el-input id="email" name="email" v-model="email" placeholder="请输入邮箱地址"></el-input>
+            <el-input id="e_code" name="code" v-model="e_code" placeholder="请输入验证码"></el-input>
+            <el-button id="send_e_code" @click="sendECode">发送验证码</el-button>
+        </form>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" id="e_sub" @click="s">确 定</el-button>
+          </span>
+    </el-dialog>
+
+
+    <el-dialog
+            title="提示"
+            :visible.sync="dialogVisible2"
+            width="30%"
+    >
+        <span>绑定手机</span>
+        <form th:action="@{/p_code_vail}" method="post" id="p_form">
+            <input type="hidden" th:value="${user.id}" name="id">
+
+            <el-input id="phone" name="phone" v-model="phone" placeholder="请输入手机号"></el-input>
+            <el-input id="p_code" name="code" v-model="p_code" placeholder="请输入验证码"></el-input>
+            <el-button id="send_p_code" @click="sendPCode">发送验证码</el-button>
+        </form>
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible2= false">取 消</el-button>
+    <el-button type="primary" @click="s2">确 定</el-button>
+  </span>
+    </el-dialog>
+
+</div>
+
+
+<script th:inline="javascript">
+    var name = [[${user.name}]];
+    var flag = false;
+    var x = 0;
+    new Vue({
+        el: '#nav',
+        data: {
+            val: "0",
+            nav: '4',
+            now: '教学一览'
+        },
+        mounted: function () {
+            $(function () {
+                $.post(
+                    "/how2j/get_no_read",
+                    function (result) {
+                        //   alert(1);
+                        if (result != "false") {
+                            //alert(result);
+                            flag = true;
+                            x = result;
+                        }
+                    }
+                );
+                //  alert(1);
+                $("#sub").click(function () {
+                    $("#form").submit();
+                });
+            });
+
+            if (flag == true) {
+                this.val = x;
+            }
+
+        }
+
+    })
+    new Vue({
+        el: "#app",
+        data: {
+            old: "",
+            password: "",
+            name: name,
+            dialogVisible: false,     //模态框是否显示
+            addLoading: false,       //是否显示loading
+            dialogVisible2: false,     //模态框是否显示
+            email: "",
+            e_code: "",
+            phone: "",
+            p_code: ""
+        },
+        mounted: function () {
+
+            var msg = [[${msg}]];
+
+
+            if (msg == "fail") {
+                this.$message('密码错误');
+            }
+            if (msg == "success") {
+                this.$message('修改成功');
+            }
+            if (msg == "p_error") {
+                this.$message('手机有误');
+            }
+            if (msg == "e_error") {
+                this.$message('邮箱有误');
+            }
+        },
+        methods: {
+            opendialog: function () {    //代开模态框
+                // alert(1);
+                this.dialogVisible = true;
+            },
+            opendialog2: function () {
+                this.dialogVisible2 = true;
+            },
+            s: function () {
+                dialogVisible = false;
+                $(function () {
+                    //var e = $("#email");
+                    //alert(e.val());
+                    $("#e_form").submit();
+                })
+            },
+            s2: function () {
+                dialogVisible = false;
+                $(function () {
+                    //var e = $("#email");
+                    //alert(e.val());
+                    $("#p_form").submit();
+                })
+            },
+            sendPCode: function () {
+                var f = true;
+                $(function () {
+                    //  alert(1);
+                    var p = $("#phone");
+                    //alert(e.val());
+                    $.ajaxSettings.async = false;
+                    $.post(
+                        "/how2j/send_phone",
+                        {"phone": p.val()},
+                        function (result) {
+
+                            if (result == "success") {
+                                f = true;
+                            } else {
+                                f = false;
+                            }
+                        }
+                    );
+                });
+                if (!f) {
+                    this.$message('您输入的手机号码或者验证码有误');
+                } else {
+                    this.$message('发送成功，请打开手机查看');
+                }
+            },
+            sendECode: function () {
+                var f = true;
+                $(function () {
+                    //  alert(1);
+                    var e = $("#email");
+                    //alert(e.val());
+                    $.ajaxSettings.async = false;
+                    $.post(
+                        "/how2j/send_email",
+                        {"to": e.val()},
+                        function (result) {
+
+                            if (result == "success") {
+                                f = true;
+                            } else {
+                                f = false;
+                            }
+                        }
+                    );
+                });
+                if (!f) {
+                    this.$message('您输入的邮箱或者验证码有误');
+                } else {
+                    this.$message('发送成功，请前往邮箱查看');
+                }
+            }
+        }
+
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body><style>
+    
+    a{
+        text-decoration: none;
+    }
+.font{
+    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+}
+</style> <div th:include="include/header::header"></div>
+<div id="app">
+
+<span v-for="step,index in steps">
+    <span v-for="title in step.titles">
+        {{title.id}}
+    </span>
+
+</span>
+    <el-row class="tac">
+        <el-col :span="4">
+            <h5>{{item}}</h5>
+            <el-menu
+                    :default-openeds=["1"]
+                    :default-active="tid"
+                    class="el-menu-vertical-demo"
+                    :collapse="isCollapse"
+>
+                <el-submenu index="1"  v-for="step,index in steps" >
+
+                    <template slot="title" >
+                        <i class="el-icon-location"></i>
+                        <span>{{step.name}}</span>
+                    </template>
+                    <el-menu-item-group>
+
+                        <a :href="'/how2j/item/'+ iid +'?step=' + indexAdd(index) +'&tindex=' + tindex + '&titleId='+title.id "
+                           v-for = "title,tindex in step.titles">
+                            <el-menu-item :index = "title.id">{{title.name}}</el-menu-item></a>
+
+                    </el-menu-item-group>
+
+                </el-submenu>
+
+            </el-menu>
+        </el-col>
+
+        <el-col :span="2">
+
+
+
+            <div style="height: 300px;">
+                <el-steps direction="vertical" :active="tindex+1">
+                    <el-step :title="'步骤' +(index+1)" :description="title.name" v-for = "title,index in titles" > </el-step>
+                </el-steps>
+            </div>
+        </el-col>
+        <el-col :span="12">
+
+            <div>
+                <div th:each="t : ${step.titles}">
+                    <span th:utext="${t.name}" class="font" style="margin: 100px;font-size: 30px;"> </span>
+                    <div th:if="${t.content != null}" th:utext="${t.content.content}"></div>
+
+                </div>
+            </div>
+
+
+            <el-button-group style = "margin:100px;">
+                <a th:href="@{/item/{id}(id=${step.iid},step=${page - 1})}"> <el-button type="primary" icon="el-icon-arrow-left">上一页</el-button></a>
+                    <a th:href="@{/item/{id}(id=${step.iid},step=${page + 1})}">  <el-button type="primary">下一页<i class="el-icon-arrow-right el-icon--right"></i></el-button></a>
+            </el-button-group>
+        </el-col>
+
+
+    </el-row>
+
+
+
+<!--
+    <ul>
+        <li th:each="s,sStat : ${steps}">
+            <a th:href="@{/item/{id}(id=${s.iid},step=${sStat.index + 1})}" th:text="${s.name}"></a>
+            <ul>
+                <li th:each="t:${s.titles}">
+                    <a href="#" th:text="${t.name}"></a>
+                </li>
+            </ul>
+
+        </li>
+    </ul>
+    -->
+<!--
+<div>
+    <div th:each="t : ${step.titles}">
+        <span th:utext="${t.name}"> </span>
+        <div th:if="${t.content != null}" th:utext="${t.content.content}"></div>
+
+    </div>
+</div>
+    <a th:href="@{/item/{id}(id=${step.iid},step=${page - 1})}">pre</a>
+    <a th:href="@{/item/{id}(id=${step.iid},step=${page + 1})}">next</a>
+
+
+
+<div>
+    回复此 Step
+--> <input type="hidden" id="input">
+    <form th:action="@{/review}" method="post"  id="rev"      style = "width:70%;margin: 50px auto;">
+        <input type="hidden" name="stid" th:value="${step.id}">
+        <!--<textarea name="content"  cols="30" rows="10">
+
+    </textarea>
+!-->
+        <el-input
+                name = "content"
+                v-model = "eeee"
+                type="textarea"
+                :autosize="{ minRows: 8, maxRows:16}"
+                placeholder="请输入内容"
+               >
+        </el-input>  <el-button id = "sub" type="submit" icon="el-icon-check" circle></el-button>
+
+    </form>
+<div style="margin: 0px auto;width:70%">
+
+<div th:each="review,in:${reviews}" >
+    <el-card class="box-card" style="border-radius: 4px;margin: 10px">
+   <span>楼层：<span th:text="${in.count}"></span></span> -><span th:if = "${review.user != null}" th:text="${review.user.name}"></span>
+      &nbsp;  &nbsp;&nbsp;&nbsp;<div th:text="${review.content}" style="padding-left:30px;"></div>
+    <el-card class="box-card" style="border-radius: 4px"  th:each="re : ${review.reReviews}">
+        </span><span style="padding-left:10px;">用户  <span th:if="${re.user != null}" th:text="${re.user.name}"></span>
+
+    </span><!--  <span>回复给 <span th:text="${review.user.name}"></span></span>-->
+        <div th:utext="${re.content}"></div>
+    </el-card>
+<!--
+    <div th:each="re : ${review.reReviews}">
+        </span><span style="padding-left:10px;">用户  <span th:if="${re.user != null}" th:text="${re.user.name}"></span>
+
+    </span><!--  <span>回复给 <span th:text="${review.user.name}"></span></span>
+        <div th:utext="${re.content}"></div>
+    </div>
+-->
+    <el-button class="show" @click="sh" >回复它</el-button>
+    <div class="k">
+        <input type="hidden" th:value="${review.id}">
+        <form th:action="@{/re_review}" method="post" class="f"  >
+
+            <el-input
+                    v-model = "textarea2[0]"
+                    class = "e3"
+                    name = "content"
+                    type="textarea"
+                    :autosize="{ minRows: 4, maxRows: 10}"
+                    placeholder="请输入内容"
+            >
+            </el-input>  <el-button class = "s" type="submit" icon="el-icon-check" circle></el-button>
+            <input type="hidden" name="rid" th:value="${review.id}">
+
+        </form>
+    </div>
+
+    </el-card>
+</div>
+
+</div>
+
+</div>
+  
+</div>
+</body>
+<script th:inline="javascript">
+    var item = [[${item.name}]];
+    var tindex = [[${tindex}]];
+    var steps = [[${steps}]];
+    var itemId = [[${item.id}]];
+    var tid = [[${tid}]];
+    var iid = 0 ;
+    var now = [[${step}]];
+    var titles = [[${step.titles}]];
+    var reviews = [[${reviews}]];
+    new Vue({
+        el:'#nav',
+        data:{
+            val:"0",
+            nav:'1',
+            now:item,
+            item:item,
+            iid:itemId,
+
+        },
+        mounted:function () {
+            $(function(){
+                $.post(
+                    "/how2j/get_no_read",
+                    function (result) {
+                        //   alert(1);
+                        if (result != "false"){
+                       //     alert(result);
+                            this.val = result ;
+                        }
+                    }
+
+                );
+            });
+        }
+
+    })
+
+new Vue({
+    el:'#app',
+    data:{
+        tindex:tindex,
+        now:now,
+        textarea2:[],
+        steps:steps,
+        item:item,
+        iid:itemId,
+        tid:tid,
+        isCollapse:false,
+        eeee:""
+    },
+    methods:{
+      indexAdd(index){
+          var  r = parseInt(index)+1 ;
+         // alert(r);
+return r;
+      },
+        sh(){
+     var x = (this.textarea2);
+       this.textarea2 = [];
+        }
+    },
+    mounted:function(){
+       // alert(index);$
+      //  alert(1);
+        $(function () {
+
+            $(".k").hide();
+            $(".show").click(function () {
+                $(".k:not(this)").hide();
+
+                $("#input").val("");
+                var x = $(this).parent().find(".k").find("input").attr("value");
+
+                $(this).parent().find(".k").find(".e3").attr("v-model","textarea2["+x+"]");
+                $(this).parent().find(".k").toggle();
+            });
+            $("#sub").click(function () {
+                $("#rev").submit();
+            });
+            $(".s").click(function () {
+                $(this).parent().submit();
+            });
+
+        });
+    }
+
+})
+
+</script>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div>
+
+    <table>
+        <tr>
+            <td>id</td>
+            <td>name</td>
+            <td>tools</td>
+        </tr>
+        <tr th:each="stage : ${stages}">
+            <td><a th:href="@{/admin/stage/{id}/item(id=${stage.id})}"  th:text = "${stage.id}"></a></td>
+            <td th:text = "${stage.name}"></td>
+            <td ><a th:href="@{./stage/{id}/edit(id=${stage.id})}">edit</a>
+                <form method="post" th:action="@{./stage/{id}(id=${stage.id})}"><input type="hidden" name="_method" value="DELETE">
+                    <input type="submit" value="delete"> </form></td>
+        </tr>
+    </table>
+
+    <form method="post" th:action="@{./stage}"> name:<input type="text" name="name" > <br><input type="submit"></form>
+</div>
+
+</body>
+</html>

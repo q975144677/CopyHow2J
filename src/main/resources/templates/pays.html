@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<style>
+    .float el-card{
+        float:left;
+    }
+    .box-card{
+        margin:10px;
+        width:30%;
+
+    }
+
+
+
+
+</style>
+<div th:include="include/header::header"></div>
+<div id="app" >
+
+    <div class="grid-content bg-purple">
+        <div class="float">
+            <el-card class="box-card" v-for="pay in pays">
+                <div slot="header" class="clearfix">
+                    <span>{{pay.id}}</span>
+                    <a :href="'/how2j/item/'+pay.item.id">
+                        <el-button style="float: right; padding: 3px 0" type="text">查看详情</el-button>
+                    </a>
+                </div>
+            </el-card>
+        </div>
+    </div>
+
+
+
+</div>
+</body>
+<script th:inline="javascript">
+var pays = [[${pays}]];
+new Vue({
+    el:'#nav',
+    data:{
+        val:"0",
+        nav:'2',
+        now:'教学一览'
+    },mounted:function () {
+        $.post(
+            "/how2j/get_no_read",
+            function (result) {
+                //   alert(1);
+                if (result != "false"){
+                //    alert(result);
+                    this.val = result ;
+                }
+            }
+
+        );
+    }
+
+})
+
+    new Vue({
+
+        el:"#app",
+        data:{
+            pays:pays
+        }
+
+
+    });
+</script>
+</html>

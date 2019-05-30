@@ -1,0 +1,68 @@
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <!-- 与普通逆向工程的区别之 1  普通的为 MyBatis3 加个 simple可以取消掉Example类的生成-->
+    <context id="Mysql" targetRuntime="MyBatis3Simple"
+             defaultModelType="flat">
+        <property name="javaFileEncoding" value="UTF-8" />
+        <!-- 是否生成 注解 @Id @Column 啥的 默认为 true -->
+        <property name="useMapperCommentGenerator" value="true" />
+        <!-- -这个插件是为了 去除 逆向工程 的bug 而使用的-->
+        <plugin type="OverIsMergeablePlugin" />
+        <!-- 与普通逆向工程区别之 2 普通版本无此类配置 毕竟不用继承mapper类-->
+        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+
+            <!-- 这种用法是官网上实例的用法 ，但是这样子生成的mapper 就只会继承一个 Mapper<T> 接口 ，没有批量插入的方法 因而修改成为下面那种-->
+            <!--	<property name="mappers"
+                    value="tk.mybatis.mapper.common.Mapper" /> -->
+
+            <!-- 继承额外的 mysqlMapper 有批量插入方法，也可以自己写个mapper接口继承对应mapper 然后修改这里的value -->
+            <property name="mappers"
+                      value="tk.mybatis.mapper.common.Mapper,tk.mybatis.mapper.common.MySqlMapper" />
+
+            <property name="caseSensitive" value="true" />
+            <property name="forceAnnotation" value="true" />
+            <property name="beginningDelimiter" value="`" />
+            <property name="endingDelimiter" value="`" />
+        </plugin>
+        <!--去掉生成的pojo类中让人厌烦的注释 -->
+        <commentGenerator>
+            <property name="suppressDate" value="true" />
+            <property name="suppressAllComments" value="true" />
+        </commentGenerator>
+        <!-- datasource-->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/seckill?serverTimezone=UTC"
+                        userId="root" password="admin">
+        </jdbcConnection>
+        <!-- 实体类 -->
+        <javaModelGenerator targetPackage="com.how2j.copy.pojo"
+                            targetProject="../copyhow2j/src/main/java" />
+        <!-- mapper xml位置-->
+        <sqlMapGenerator targetPackage="mapper"
+                         targetProject="../copyhow2j/src/main/resources">
+            <property name="enableSubPackage" value="true" />
+        </sqlMapGenerator>
+        <!-- mapper 对应的 接口-->
+        <javaClientGenerator type="XMLMAPPER"
+                             targetPackage="com.how2j.copy.mapper" targetProject="../copyhow2j/src/main/java">
+            <property name="enableSubPackage" value="true" />
+        </javaClientGenerator>
+
+        <!-- 配置数据库中的表-->
+        <table tableName="authority">
+            <!-- 自增长键 一般不用配置-->
+            <property name="my.isgen.usekeys" value="true" />
+            <generatedKey column="id" sqlStatement="JDBC" />
+        </table>
+
+        <table tableName="user_authority">
+            <!-- 自增长键 一般不用配置-->
+            <property name="my.isgen.usekeys" value="true" />
+            <generatedKey column="id" sqlStatement="JDBC" />
+        </table>
+
+
+    </context>
+</generatorConfiguration>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+<div  th:if = "${content != null}">
+    <div th:utext = "${content.content}">
+        
+    </div>
+    <form th:action="@{/admin/content/{id}(id=${content.id})}" method="post">
+        <input type="hidden" name="_method" value="DELETE">
+        <input type="submit"><input type="hidden" th:value="${content.id}"></form>
+
+</div>
+    <div th:unless = "${content != null}">
+        nulllllllllllllllll!
+    </div>
+    <a th:href="@{content/insert}"><button>go</button></a>
+    </div>
+
+</body>
+</html>

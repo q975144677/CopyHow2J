@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:include="include/header::header"></div>
+<div id="app">
+
+<!--
+map noReads read msgs
+
+-->
+
+    <el-divider content-position="left">未读消息</el-divider>
+
+    <el-collapse >
+        <el-collapse-item :title="re.user.username+'发给你的一个回复'" :name="index2" v-for = "re,index2 in list">
+            <div>{{re.content}}</div>
+        </el-collapse-item>
+    </el-collapse>
+    <el-divider></el-divider>
+    <el-divider content-position="left">已读消息</el-divider>
+  <el-collapse >
+        <el-collapse-item :title="rr.user.username+'发给你的一个回复'" :name="index" v-for = "rr,index in msgs">
+            <div>{{rr.content}}</div>
+
+        </el-collapse-item>
+
+    </el-collapse>
+<!--
+<div v-for = "re in list">
+    {{re.id}}
+
+</div>
+
+    <div v-for = "rr in list2">
+    {{rr.id}}</div>
+-->
+</div>
+
+
+<script th:inline="javascript">
+   // var items = [[${items}]];
+   // var stages = [[${stages}]];
+   var list = [[${noReads}]];
+   var list2 = [[${reads}]];
+   var msgs = [[${msgs}]];
+   new Vue({
+
+       el:"#app",
+       data:{
+           list:list,
+           list2:list2,
+           msgs:msgs
+       }
+   })
+    new Vue({
+        el:'#nav',
+        data:{
+            val:"0",
+            nav:'3',
+            now:'教学一览'
+        },
+        mounted:function () {
+            $(function(){
+                    $.post(
+                        "/how2j/get_no_read",
+                        function (result) {
+                            //   alert(1);
+                            if (result != "false"){
+                              //  alert(result);
+                                this.val = result ;
+                            }
+                        }
+
+                    );
+            });
+        }
+
+    })
+</script>
+
+</body>
+</html>

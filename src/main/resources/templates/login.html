@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<style>
+    form input {
+        margin: 20px 0px;
+        display: inline;
+    }
+
+</style>
+<div th:include="include/header::header"></div>
+
+<div id="app">
+    <el-breadcrumb separator-class="el-icon-arrow-right" style="margin:10px;">
+        <el-breadcrumb-item><a href="/how2j">首页</a></el-breadcrumb-item>
+        <el-breadcrumb-item>账户</el-breadcrumb-item>
+        <el-breadcrumb-item>登录</el-breadcrumb-item>
+        <el-breadcrumb-item>密码登录</el-breadcrumb-item>
+    </el-breadcrumb>
+    <form id="f" th:action="@{/account/login}" method="post" style="width:800px;margin:0px auto;">
+        <div style="float:left;color:red;">
+            <span th:if="${msg != null}">用户名或者密码错误</span>
+        </div>
+        <br>
+        账户：
+        <el-input id="nm" name="username" v-model="username" placeholder="请输入账号或者邮箱或者手机"></el-input>
+        密码：
+        <el-input id="2nm" name="password" type="password" v-model="password" placeholder="请输入密码"></el-input>
+
+        <template>
+
+            <el-checkbox v-model="checked" name="remember-me">记住我</el-checkbox>
+        </template>
+        <br>
+        <el-button-group style="margin:10px 0px">
+            <el-button type="primary" icon="el-icon-check" id="sub">提交</el-button>
+            <el-button type="primary" id="res">重置<i class="el-icon-close"></i></el-button>
+
+        </el-button-group>
+
+        <el-button-group style="margin:10px 0px;float:right">
+            <a href="/how2j/account/login/phone">
+                <el-button type="primary" icon="el-icon-mobile-phone">手机登录</el-button>
+            </a> <a href="/how2j/account/login/email">
+            <el-button type="primary">邮箱登陆 <i class="el-icon-message"></i></el-button>
+        </a>
+        </el-button-group>
+    </form>
+
+</div>
+
+
+<div>
+
+
+</div>
+</body>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            username: "",
+            password: "",
+            checked: "false"
+        },
+        mounted: function () {
+            $(function () {
+                $("#sub").click(function () {
+                    //alert(1);
+
+                    $("#f").submit();
+                });
+                $("#res").click(function () {
+                    //alert(1);
+                    $("#f")[0].reset();
+                });
+            });
+        }
+
+    })
+    new Vue({
+        el: '#nav',
+        data: {
+            val: "0",
+            nav: '9',
+            now: '教学一览'
+        },
+        mounted: function () {
+            $.post(
+                "/how2j/get_no_read",
+                function (result) {
+                    //   alert(1);
+                    if (result != "false") {
+                        //alert(result);
+                        this.val = result;
+                    }
+                }
+            );
+        }
+
+    })
+</script>
+</html>

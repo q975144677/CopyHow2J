@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>    <style>
+    form input{
+        margin:20px 0px;
+    }
+</style>
+<div th:include="include/header::header"></div>
+<div id="app" style="margin:30px 0px;">
+
+    <form id="f" th:action="@{/account/register}" method="post" style="margin:0px auto;width:800px;">
+        <div style="float:left;color:red;">
+            <span th:if="${msg != null}">账户已存在</span>
+        </div>
+        <br>
+        账户：请输入6位以上 <span id="nop1" style="display: none;"><i class="el-icon-warning"></i></span><el-input id="nm" name = "username" v-model="username" placeholder="请输入账号" ></el-input>
+        密码：请输入6位以上 <span id="nop2" style="display: none;"><i class="el-icon-warning"></i></span>
+        <el-input id="2nm" name = "password"  type = "password" v-model="password" placeholder="请输入密码" ></el-input>
+        昵称：  <el-input id="32nm" name = "name" v-model="name" placeholder="请输入昵称" ></el-input>
+
+        <br>
+        <el-button-group style ="margin:10px 0px">
+            <el-button type="primary" icon="el-icon-check" id="sub">提交</el-button>
+            <el-button type="primary" id="res">重置<i class="el-icon-close"></i></el-button>
+        </el-button-group>
+
+        <span style="margin: 0px 25px;">注册完成后在右上角 “我的” 里面完善邮箱和手机号 就可以使用邮箱和手机登录了</span>
+    </form>
+</div>
+</body>
+<script>
+    new Vue({
+        el:"#app",
+        data:{
+            username:"",
+            password:"",
+            name:""
+        },
+        mounted:function () {
+            $(function () {
+                $("#sub").click(function () {
+                    //alert(1);
+                    var username = $("#nm");
+                    var password = $("#2nm");
+                    if (username.val().length < 6){
+                        $("#nop1").show();
+                        return ;
+                    }
+                    $("#nop1").hide();
+                    if (password.val().length < 6){
+                        $("#nop2").show();
+                        return ;
+                    }
+                    $("#nop2").hide();
+                    $("#f").submit();
+                });
+                $("#res").click(function () {
+                    //alert(1);
+                    $("#f")[0].reset();
+                });
+
+            });
+        }
+
+    })
+
+    new Vue({
+        el:'#nav',
+        data:{
+            val:"0",
+            nav:'9',
+            now:'教学一览'
+        },
+        mounted:function () {
+            $.post(
+                "/how2j/get_no_read",
+                function (result) {
+                    //   alert(1);
+                    if (result != "false"){
+                        //alert(result);
+                        this.val = result ;
+                    }
+                }
+
+            );
+        }
+
+    })
+</script>
+</html>
